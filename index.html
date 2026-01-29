@@ -3,9 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Product Store</title>
+    <style>
+        .product-container{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            padding: 20px;
+            border:2px solid #ccc;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            background-color: #fff;
+        }
+    </style>
 </head>
 <body>
-    
+    <h1> Product Store</h1>
+    <div class="product-container" id="productContainer"></div>
+
+    <script>
+        fetch('https://dummyjson.com/products')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                displayProducts(data.products);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+
+        function displayProducts(products) {
+            const container = document.getElementById('productContainer');
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                
+                productCard.innerHTML = `
+                    
+                    <img src="${product.thumbnail}" alt="${product.title}" class="product-image" onerror="this.src='https://via.placeholder.com/300x250?text=No+Image'">
+                    <div class="product-info">
+                        
+                        <h2 class="product-title">${product.title}</h2>
+                        <div class="product-details">
+                            <span class="product-price">$${product.price}</span>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(productCard);
+            });
+        }
+    </script>
 </body>
 </html>
