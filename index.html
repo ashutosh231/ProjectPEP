@@ -22,11 +22,14 @@
             display: flex;
             flex-direction: column;
             background-color: #fff;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
     <h1> Product Store</h1>
+    <input type="text" id="searchInput" placeholder="Search products...">
+    <button id="searchBtn">Search</button>
     <div class="product-container" id="productContainer"></div>
 
     <script>
@@ -62,6 +65,16 @@
                 container.appendChild(productCard);
             });
         }
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.trim();//
+            if (!query) return;// Ignore empty searches
+            console.log('Searching for:', query);
+            window.location.href = `search.html?query=${encodeURIComponent(query)}`;//encodeURIComponent() encodes special characters in the query string
+            searchInput.value = '';
+        });
     </script>
 </body>
 </html>
