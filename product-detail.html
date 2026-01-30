@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #productDetails {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .product-image-container {
+            flex: 0 0 400px;
+        }
+        .product-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .product-info {
+            flex: 1;
+        }
+        .product-info h2 {
+            margin-top: 0;
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        .product-info p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #555;
+            font-size: 16px;
+        }
+        .product-info p b {
+            color: #333;
+        }
+        .product-price {
+            color: #28a745;
+            font-weight: bold;
+            font-size: 32px;
+            margin: 20px 0;
+        }
+        .product-description {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            border-left: 4px solid #007bff;
+        }
+        @media (max-width: 768px) {
+            #productDetails {
+                flex-direction: column;
+            }
+            .product-image-container {
+                flex: 1;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.location.href='index.html'">Back to Home</button>
+    <button onclick="window.location.href='product-history.html'">View History</button>
+    <div id="productDetails"></div>
+
+</body>
+<script>
+    let params=new URLSearchParams(window.location.search);
+    let id=params.get('id');
+    console.log('Product ID from URL:', id);
+    fetch(`https://dummyjson.com/products/${id}`)
+        .then(response => response.json())
+        .then(product => {
+            console.log('Fetched Product Details:', product);
+            
+            // Store product view history
+            let viewHistory = JSON.parse(localStorage.getItem('productViewHistory')) || [];
+            const existingIndex = viewHistory.findIndex(item => item.id === product.id);
+            
+            if (existingIndex !== -1) {
+                // Update existing entry's timestamp
+                viewHistory[existingIndex].time = Date.now();
+            } else {
+                // Add new entry
+                viewHistory.push({
+                    id: product.id,
+                    title: product.title,
+                    thumbnail: product.thumbnail,
+                    price: product.price,
+                    time: Date.now()
+                });
+            }
+            
+            localStorage.setItem('productViewHistory', JSON.stringify(viewHistory));
+            
+            const container = document.getElementById('productDetails');
+            container.innerHTML = `
+                <div class="product-image-container">
+                    <img src="${product.thumbnail}" alt="${product.title}" onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
+                </div>
+                <div class="product-info">
+                    <h2>${product.title}</h2>
+                    <div class="product-price">$${product.price}</div>
+                    <p><b>Rating:</b> ⭐ ${product.rating} / 5</p>
+                    <div class="product-description">
+                        <p><b>Description:</b><br>${product.description}</p>
+                    </div>
+                    <p><b>Category:</b> ${product.category}</p>
+                    <p><b>Brand:</b> ${product.brand}</p>
+                    <p><b>Stock:</b> ${product.stock} units available</p>
+                    <p><b>Discount:</b> ${product.discountPercentage}% off</p>
+                    <p><b>Weight:</b> ${product.weight || 'N/A'}</p>
+                    <p><b>SKU:</b> ${product.sku || 'N/A'}</p>
+                    <p><b>Warranty:</b> ${product.warrantyInformation || '1 year manufacturer warranty'}</p>
+                    <p><b>Shipping Information:</b> ${product.shippingInformation || 'Free shipping on orders over $50'}</p>
+                    <p><b>Return Policy:</b> ${product.returnPolicy || '30-day return policy'}</p>
+                    <p><b>Minimum Order Quantity:</b> ${product.minimumOrderQuantity || '1 unit'}</p>
+                    <p><b>Tags:</b> ${product.tags ? product.tags.join(', ') : 'N/A'}</p>
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Error fetching product details:', error);
+        });
+
+
+
+</script>
+</html>
