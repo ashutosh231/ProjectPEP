@@ -46,7 +46,7 @@
     <button onclick="window.location.href='history.html'">View Search History</button>
     <div id="suggestions"></div>
     <div class="product-container" id="productContainer"></div>
-    <div id="searchHistory"></div>
+    
     
 
     <script>
@@ -78,6 +78,11 @@
                         </div>
                     </div>
                 `;
+                
+                productCard.addEventListener('click', () => {
+                    window.location.href = `product-detail.html?id=${product.id}`;
+                    console.log('Product ID:', product.id);
+                });
                 
                 container.appendChild(productCard);
             });
@@ -125,6 +130,7 @@
                 suggestionBox.appendChild(div);
             });
         });
+        
     </script>
 </body>
 </html>

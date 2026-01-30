@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        #productDetails {
+            max-width: 1200px;
+            max-height: auto;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background-color: #fff;
+        }
+        #productDetails img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        #productDetails h2 {
+            margin-top: 0;
+        }
+        #productDetails p {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="productDetails"></div>
+
+</body>
+<script>
+    let params=new URLSearchParams(window.location.search);
+    let id=params.get('id');
+    console.log('Product ID from URL:', id);
+    fetch(`https://dummyjson.com/products/${id}`)
+        .then(response => response.json())
+        .then(product => {
+            console.log('Fetched Product Details:', product);
+            const container = document.getElementById('productDetails');
+            container.innerHTML = `
+                <h2>${product.title}</h2>
+                <img src="${product.thumbnail}" alt="${product.title}" style="width:300px;">
+                <p><b>Price:</b> $${product.price}</p>
+                <p><b>Description:</b> ${product.description}</p>
+                <p><b>Category:</b> ${product.category}</p>
+                <p><b>Brand:</b> ${product.brand}</p>
+                <p><b>Rating:</b> ${product.rating} / 5</p>
+                <p><b>Stock:</b> ${product.stock} units available</p>
+                <p><b>Weight:</b> ${product.weight || 'N/A'}</p>
+                <p><b>SKU:</b> ${product.sku || 'N/A'}</p>
+                <p><b>Warranty:</b> ${product.warrantyInformation || '1 year manufacturer warranty'}</p>
+                <p><b>Discount:</b> ${product.discountPercentage}% off</p>
+                <p><b>Shipping Information:</b> ${product.shippingInformation || 'Free shipping on orders over $50'}</p>
+                <p><b>Return Policy:</b> ${product.returnPolicy || '30-day return policy'}</p>
+                <p><b>Minimum Order Quantity:</b> ${product.minimumOrderQuantity || '1 unit'}</p>
+                <p>${product.tags ? 'Tags: ' + product.tags.join(', ') : ''}</p>
+            `;
+        })
+        .catch(error => {
+            console.error('Error fetching product details:', error);
+        });
+
+
+
+</script>
+</html>
